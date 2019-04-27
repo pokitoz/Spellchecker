@@ -1,0 +1,38 @@
+This program implements a spellChecker.
+
+In the first implementation, a linkedlist was used to store the dictionary.
+To speedup the research, I used 26 linkedlist for the second implementation.
+By looking at the first letter of the word, I was looking and storing it to 
+a specific linkedlist.
+
+The dictionary has been taken from /usr/share/dict/british-english in linux.
+
+Here are the results from Valgrind (http://valgrind.org/) about Heap usage for
+a dictionary of ~200'000 words for the entire program.
+
+	* Use statically array for word storage: 	7,934,896 bytes
+	* Use malloc to allocate dynamically:	 	2,526,736 bytes
+	* Use 26 linked list with malloc allocation: 	2,527,584 bytes
+
+Execution time:
+	* Use 1 linkedlist:	 0.330777 second
+	* Use 26 linked list:	 0.080406 second
+
+Improvements:
+- An array could be used to cache the words that are used often (like the first
+250) in order to avoid looking into the linkedlist.
+- A linked list has some advantages to add more elements in it; however,
+more memory is needed compared to an array. But, if we assume that the 
+dictionary size can be increased at run time, an allocated array (malloc) must
+be reallocated (realloc) to store the new words. Whereas it is easy to add 
+a new word in a linkedlist. However, searching into a sorted array if must
+faster (using binary search: O(log(n)) than searching into a linkedlist (linear
+search: O(n)).
+- Depending on the device used, storing 200'000 words in memory may be too much.
+(see the results from Valgrind). Another idea could be to break the dictionary 
+into multiple files, 'a.txt'; 'b.txt'; ... and open the files when a word needs
+to be checked. Of course, it will take more time but it would be less memory 
+consumming.
+- Abreviations like 'i.e.' are currently changed to 'i.e' as the dot and other
+special characters are remove at the end of a word.
+- More optimization
